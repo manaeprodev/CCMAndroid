@@ -11,4 +11,6 @@
     <color name="night_blue">#FF070846</color>
     <color name="light_lime">#FFCCF0C9</color>
     <color name="turquoise">#FF7CBDA8</color>
+    <color name="warning_red">#D12857</color>
+    <color name="info_blue">#28D1D1</color>
 </resources>

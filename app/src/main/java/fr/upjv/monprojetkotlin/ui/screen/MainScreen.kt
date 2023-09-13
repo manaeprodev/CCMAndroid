@@ -14,7 +14,9 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun MainScreen(
     onButtonClick: () -> Unit,
-) {
+    onButton2Click: () -> Unit,
+
+    ) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -27,5 +29,12 @@ fun MainScreen(
             },
             onClick = { onButtonClick() }
         )
+        Button(
+            content = {
+                Text("go to chuck norris")
+            },
+            onClick = { onButton2Click() }
+        )
+
     }
 }

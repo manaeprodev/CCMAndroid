@@ -2,10 +2,13 @@ package fr.upjv.monprojetkotlin.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,7 +27,7 @@ import fr.upjv.monprojetkotlin.ui.viewmodel.AndroidVersionViewModel
 @Composable
 fun ListScreen(modifier: Modifier = Modifier) {
     val viewModel: AndroidVersionViewModel = viewModel()
-    val list = viewModel.androidVersionList.collectAsState().value
+    val list = viewModel.androidVersionList.collectAsState(emptyList()).value
 
     LazyColumn(
         modifier = Modifier.padding(8.dp),
@@ -32,6 +35,33 @@ fun ListScreen(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(8.dp),
     )
     {
+        item {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+            ) {
+                Button(
+                    content = {
+                        Text("Add")
+                    },
+//                    modifier = Modifier
+//                        .background(color = colorResource(id = R.color.info_blue)),
+                    onClick = {
+                        viewModel.insertAndroidVersion()
+                    }
+                )
+                Button(
+                    content = {
+                        Text("Delete")
+                    },
+//                    modifier = Modifier
+//                        .background(color = colorResource(id = R.color.warning_red)),
+                    onClick = {
+                        viewModel.deleteAllAndroidVersion()
+                    }
+                )
+            }
+        }
         items(
             count = list.size,
         ) {
@@ -49,7 +79,10 @@ fun ListScreen(modifier: Modifier = Modifier) {
                 is Item -> Text(
                     text = "Number ${currentItem.versionNumber}",
                     modifier = Modifier
-                        .background(color = colorResource(id = R.color.light_lime), shape = CircleShape)
+                        .background(
+                            color = colorResource(id = R.color.light_lime),
+                            shape = CircleShape
+                        )
                         .padding(4.dp),
                     color = Color.Black,
                 )
@@ -57,7 +90,10 @@ fun ListScreen(modifier: Modifier = Modifier) {
                 is ItemUi.Footer -> Text(
                     text = "${currentItem.number} total items",
                     modifier = Modifier
-                        .background(color = colorResource(id = R.color.turquoise), shape = CircleShape)
+                        .background(
+                            color = colorResource(id = R.color.turquoise),
+                            shape = CircleShape
+                        )
                         .padding(6.dp),
                     color = Color.Gray,
                 )
