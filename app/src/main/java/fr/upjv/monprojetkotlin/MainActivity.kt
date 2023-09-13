@@ -1,132 +1,95 @@
 package fr.upjv.monprojetkotlin
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import fr.upjv.monprojetkotlin.ItemUi.MyAndroidObject
+import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import fr.upjv.monprojetkotlin.ui.navigation.HomeNavHost
 import fr.upjv.monprojetkotlin.ui.theme.MonProjetKotlinTheme
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MonProjetKotlinTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                val navController = rememberNavController()
+                Scaffold(
+                    modifier = Modifier,
+                    topBar = {
+                        TopAppBar(
+                            title = { Text(text = stringResource(id = R.string.app_name)) },
+                            navigationIcon = {
+                                IconButton(onClick = {
+                                    navController.popBackStack()
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.ArrowBack,
+                                        contentDescription = null
+                                    )
+                                }
+                            },
+                        )
+                    },
+                    bottomBar = {
+                        val painter = rememberAsyncImagePainter(
+                            ImageRequest
+                                .Builder(LocalContext.current)
+                                .data(data = "https://img1.picmix.com/output/pic/normal/8/4/8/9/9319848_b5fa0.gif")
+                                .build()
+                        )
+
+                        Image(
+                            modifier = Modifier.size(128.dp),
+                            painter = painter,
+                            contentDescription = null,
+                        )
+                    }
                 ) {
-                    MyList()
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(it)
+                    ) {
+                        HomeNavHost(
+                            navController = navController
+                        )
+                    }
                 }
             }
         }
     }
-}
-
-@Composable
-fun MyList(modifier: Modifier = Modifier) {
-    LazyColumn(
-        modifier = Modifier.padding(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    )
-    {
-        val listOfResult = mutableListOf<ItemUi>()
-        populateMyList() // listOf(MyAndroidObject)
-            .groupBy { myAndroidObject ->
-                myAndroidObject.versionName
-            } // map <String, List<MyAndroidObject>>
-            .forEach {
-                listOfResult.add(
-                    ItemUi.Header(
-                        title = it.key,// versionName
-                    )
-                )
-                listOfResult.addAll(
-                    it.value // List of android version number for the given name
-
-                )
-                listOfResult.add(
-                    ItemUi.Footer(
-                        number = it.value.size
-                    )
-                )
-            }
-
-
-        items(
-            count = listOfResult.size,
-        ) {
-            when (val currentItem = listOfResult[it]) {
-                is ItemUi.Header -> Text(
-                    text = "Name = ${currentItem.title}"
-                )
-
-
-                is MyAndroidObject -> Text(
-                    text = "Number ${currentItem.versionNumber}"
-                )
-
-                is ItemUi.Footer -> Text(
-                    text = "${currentItem.number} total items"
-                )
-            }
-        }
-    }
-
-}
-
-sealed interface ItemUi {
-
-
-    data class MyAndroidObject(
-        val versionName: String,
-        val versionNumber: String,
-    ) : ItemUi
-
-
-    data class Header(
-        val title: String,
-    ) : ItemUi
-
-    data class Footer(
-        val number: Int,
-    ) : ItemUi
-}
-
-
-private fun populateMyList(): List<MyAndroidObject> {
-    return listOf<MyAndroidObject>(
-        MyAndroidObject(versionName = "HoneyComb", versionNumber = "3.0"),
-        MyAndroidObject(versionName = "Ice Cream Sandwich", versionNumber = "4.0"),
-        MyAndroidObject(versionName = "Ice Cream Sandwich", versionNumber = "4.0.1"),
-        MyAndroidObject(versionName = "Ice Cream Sandwich", versionNumber = "4.0.2"),
-        MyAndroidObject(versionName = "Ice Cream Sandwich", versionNumber = "4.0.3"),
-        MyAndroidObject(versionName = "Jelly Bean", versionNumber = "4.1"),
-        MyAndroidObject(versionName = "Jelly Bean", versionNumber = "4.2"),
-        MyAndroidObject(versionName = "Jelly Bean", versionNumber = "4.3"),
-        MyAndroidObject(versionName = "Kitkat", versionNumber = "4.4"),
-        MyAndroidObject(versionName = "Lollipop", versionNumber = "5.0"),
-        MyAndroidObject(versionName = "Lollipop", versionNumber = "5.1"),
-        MyAndroidObject(versionName = "Marshmallow", versionNumber = "6.0"),
-        MyAndroidObject(versionName = "Nougat", versionNumber = "7.0"),
-        MyAndroidObject(versionName = "Oreo", versionNumber = "8.0"),
-        MyAndroidObject(versionName = "Oreo", versionNumber = "8.1"),
-    )
 }
